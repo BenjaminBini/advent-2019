@@ -5,6 +5,7 @@ import io.bini.advent.day_2.Day2;
 import io.bini.advent.day_3.Day3;
 import io.bini.advent.day_4.Day4;
 import io.bini.advent.day_5.Day5;
+import io.bini.advent.day_6.Day6;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Main {
         daysToRun.add(new Day3());
         daysToRun.add(new Day4());
         daysToRun.add(new Day5());
+        daysToRun.add(new Day6());
         for (Day day : daysToRun) {
             printDay(day);
         }
