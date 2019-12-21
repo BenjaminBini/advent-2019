@@ -14,7 +14,6 @@ public class Day8 extends Day {
 
     @Override
     protected String runPart1() throws IOException {
-        int result = 0;
         BufferedReader bf = readFile();
         String input = bf.readLine();
         int length = 25;
@@ -46,13 +45,12 @@ public class Day8 extends Day {
                 layerWithMinimumOfZeros = i;
             }
         }
-        result = numberOfOnesForLayer.get(layerWithMinimumOfZeros) * numberOfTwosForLayer.get(layerWithMinimumOfZeros);
+        int result = numberOfOnesForLayer.get(layerWithMinimumOfZeros) * numberOfTwosForLayer.get(layerWithMinimumOfZeros);
         return String.valueOf(result);
     }
 
     @Override
     protected String runPart2() throws IOException {
-        int result = 0;
         List<int[][]> layers = new ArrayList<>();
         BufferedReader bf = readFile();
         String input = bf.readLine();
@@ -66,20 +64,21 @@ public class Day8 extends Day {
             if (picture[x][y] == 0 && color != '2') {
                 if (color == '0') {
                     color = '.';
+                } else if (color == '1') {
+                    color = '0';
                 }
                 picture[x][y] = color;
             }
         }
 
+        String result = "";
         for (int i = 0; i < width; i++) {
+            result += "\n";
             for (int j = 0; j < length; j++) {
-                System.out.print(picture[i][j]);
+                result += picture[i][j];
             }
-            System.out.println();
         }
-
-
-        return String.valueOf(result);
+        return result;
     }
 
 }
