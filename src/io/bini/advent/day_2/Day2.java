@@ -15,7 +15,7 @@ public class Day2 extends Day {
     protected String runPart1() throws IOException {
         BufferedReader bf = this.readFile();
         String program = bf.readLine();
-        int output = runProgram(program, 12, 2, null);
+        int output = runProgram(program, null, 12, 2, null).getResult();
         return String.valueOf(output);
     }
 
@@ -29,7 +29,7 @@ public class Day2 extends Day {
         int requiredOutput = 19690720;
         for (noun = 0; noun <= 99 && output != requiredOutput; noun++) {
             for (verb = 0; verb <= 99 && output != requiredOutput; verb++) {
-                output = runProgram(program, noun, verb, null);
+                output = runProgram(program, null, noun, verb, null).getResult();
             }
         }
         String result = String.valueOf(100 * (noun - 1) + (verb - 1));
@@ -37,8 +37,14 @@ public class Day2 extends Day {
     }
 
 
-    public static int runProgram(String program, Integer noun, Integer verb, Integer input) {
-        int[] opCodes = Arrays.stream(program.split(",")).mapToInt(Integer::parseInt).toArray();
+    public static ProgramResult runProgram(String program, int[] opCodes, Integer noun, Integer verb, Integer[] inputs) {
+        return runProgram(program, opCodes, noun, verb, inputs, 0);
+    }
+
+    public static ProgramResult runProgram(String program, int[] opCodes, Integer noun, Integer verb, Integer[] inputs, int initialPosition) {
+        if (opCodes == null) {
+            opCodes = Arrays.stream(program.split(",")).mapToInt(Integer::parseInt).toArray();
+        }
         if (noun != null) {
             opCodes[1] = noun;
         }
@@ -47,9 +53,8 @@ public class Day2 extends Day {
         }
 
         int step;
-        int lastOutput = 0;
-        for (int i = 0; opCodes[i] != 99; i += step) {
-
+        int inputIndex = 0;
+        for (int i = initialPosition; opCodes[i] != 99; i += step) {
             String instruction = leftPad(String.valueOf(opCodes[i]), 5);
             Operation operation = Operation.getOperation(instruction.charAt(instruction.length() - 1));
             step = operation.getParametersCount() + 1;
@@ -62,9 +67,17 @@ public class Day2 extends Day {
                 int result = parameters[0] * parameters[1];
                 opCodes[parameters[2]] = result;
             } else if (operation.equals(Operation.OUTPUT)) {
-                lastOutput = parameters[0];
+                if (noun == null && verb == null && parameters[0] > 0) {
+                    return new ProgramResult(opCodes, i, step, parameters[0]);
+                }
             } else if (operation.equals(Operation.INPUT)) {
-                opCodes[parameters[0]] = input;
+                if (inputIndex >= inputs.length) {
+                    return new ProgramResult(opCodes, -1, 0, 0);
+                }
+                int inputPosition = parameters[0];
+                int inputValue = inputs[inputIndex];
+                opCodes[inputPosition] = inputValue;
+                inputIndex++;
             } else if (operation.equals(Operation.JUMP_IF_TRUE)) {
                 if (parameters[0] != 0) {
                     step = 0;
@@ -89,7 +102,54 @@ public class Day2 extends Day {
                 }
             }
         }
-        return (noun == null && verb == null) ? lastOutput : opCodes[0];
+        return new ProgramResult(opCodes, -1, 0, opCodes[0]);
+        //return opCodes[0];
+    }
+
+    public static class ProgramResult {
+        private int[] opCodes;
+        private int pointer;
+        private int nextStep;
+        private int result;
+
+        public ProgramResult(int[] opCodes, int pointer, int nextStep, int result) {
+            this.opCodes = opCodes;
+            this.pointer = pointer;
+            this.nextStep = nextStep;
+            this.result = result;
+        }
+
+        public int[] getOpCodes() {
+            return opCodes;
+        }
+
+        public void setOpCodes(int[] opCodes) {
+            this.opCodes = opCodes;
+        }
+
+        public int getPointer() {
+            return pointer;
+        }
+
+        public void setPointer(int pointer) {
+            this.pointer = pointer;
+        }
+
+        public int getResult() {
+            return result;
+        }
+
+        public void setResult(int result) {
+            this.result = result;
+        }
+
+        public int getNextStep() {
+            return nextStep;
+        }
+
+        public void setNextStep(int nextStep) {
+            this.nextStep = nextStep;
+        }
     }
 
     private enum Operation {

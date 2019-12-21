@@ -6,6 +6,7 @@ import io.bini.advent.day_3.Day3;
 import io.bini.advent.day_4.Day4;
 import io.bini.advent.day_5.Day5;
 import io.bini.advent.day_6.Day6;
+import io.bini.advent.day_7.Day7;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class Main {
         daysToRun.add(new Day4());
         daysToRun.add(new Day5());
         daysToRun.add(new Day6());
+        daysToRun.add(new Day7());
         for (Day day : daysToRun) {
             printDay(day);
         }
@@ -30,9 +32,9 @@ public class Main {
         long startTime = System.nanoTime();
         String part1Result = day.runPart1();
         long day1Time = System.nanoTime();
+        System.out.println(day.getName() + "_1: " + part1Result + "(" + (day1Time - startTime) / 1_000 + "us)");
         String part2Result = day.runPart2();
         long day2Time = System.nanoTime();
-        System.out.println(day.getName() + "_1: " + part1Result + "(" + (day1Time - startTime) / 1_000 + "us)");
         System.out.println(day.getName() + "_2: " + part2Result + "(" + (day2Time - day1Time) / 1_000 + "us)");
 
     }

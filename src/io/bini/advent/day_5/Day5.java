@@ -15,7 +15,7 @@ public class Day5 extends Day {
     protected String runPart1() throws IOException {
         BufferedReader bf = this.readFile();
         String program = bf.readLine();
-        int output = Day2.runProgram(program, null, null, 1);
+        int output = Day2.runProgram(program, null, null, null, new Integer[]{1}).getResult();
         return String.valueOf(output);
     }
 
@@ -23,7 +23,7 @@ public class Day5 extends Day {
     protected String runPart2() throws IOException {
         BufferedReader bf = this.readFile();
         String program = bf.readLine();
-        int output = Day2.runProgram(program, null, null, 5);
+        int output = Day2.runProgram(program, null, null, null, new Integer[]{5}).getResult();
         return String.valueOf(output);
     }
 }
