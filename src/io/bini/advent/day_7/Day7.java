@@ -21,12 +21,12 @@ public class Day7 extends Day {
 
         int[] inputs = new int[]{4, 3, 2, 1, 0};
         List<int[]> permutations = permute(inputs, 0, inputs.length - 1, new ArrayList<>());
-        int maxOutput = 0;
+        long maxOutput = 0;
         for (int[] perm : permutations) {
-            int output = 0;
-            int[] opCodes = Arrays.stream(program.split(",")).mapToInt(Integer::parseInt).toArray();
+            long output = 0;
+            long[] opCodes = Arrays.stream(program.split(",")).mapToLong(Long::parseLong).toArray();
             for (int i = 0; i < 5; i++) {
-                output = Day2.runProgram(null, opCodes, null, null, new Integer[]{perm[i], output}, 0).getResult();
+                output = Day2.runProgram(null, opCodes, null, null, new Integer[]{perm[i], (int) output}, 0).getResult();
             }
             if (output > maxOutput) {
                 maxOutput = output;
@@ -44,16 +44,16 @@ public class Day7 extends Day {
 
         int[] inputs = new int[]{5, 6, 7, 8, 9};
         List<int[]> permutations = permute(inputs, 0, inputs.length - 1, new ArrayList<>());
-        int maxOutput = 0;
-        int[] opCodes = Arrays.stream(program.split(",")).mapToInt(Integer::parseInt).toArray();
+        long maxOutput = 0;
+        long[] opCodes = Arrays.stream(program.split(",")).mapToLong(Long::parseLong).toArray();
         for (int i = 0; i < permutations.size(); i++) {
-            List<int[]> programs = new ArrayList<>();
+            List<long[]> programs = new ArrayList<>();
             for (int j = 0; j < 5; j++) {
-                int[] copiedProgram = new int[opCodes.length];
+                long[] copiedProgram = new long[opCodes.length];
                 System.arraycopy(opCodes, 0, copiedProgram, 0, opCodes.length);
                 programs.add(copiedProgram);
             }
-            int output = 0;
+            long output = 0;
             int[] permutation = permutations.get(i);
             int inputIndex = 0;
             int pointer;
@@ -61,11 +61,11 @@ public class Day7 extends Day {
             int[] pointers = new int[]{0, 0, 0, 0, 0};
             for (int amplifierIndex = 0; true; amplifierIndex = (amplifierIndex + 1) % 5) {
                 Day2.ProgramResult result;
-                int[] opCodesInput = programs.get(amplifierIndex);
+                long[] opCodesInput = programs.get(amplifierIndex);
                 if (inputIndex < permutation.length) {
-                    result = Day2.runProgram(null, opCodesInput, null, null, new Integer[]{permutation[inputIndex], output}, pointers[amplifierIndex]);
+                    result = Day2.runProgram(null, opCodesInput, null, null, new Integer[]{permutation[inputIndex], (int) output}, pointers[amplifierIndex]);
                 } else {
-                    result = Day2.runProgram(null, opCodesInput, null, null, new Integer[]{output}, pointers[amplifierIndex]);
+                    result = Day2.runProgram(null, opCodesInput, null, null, new Integer[]{(int) output}, pointers[amplifierIndex]);
                 }
                 inputIndex++;
                 pointer = result.getPointer();
