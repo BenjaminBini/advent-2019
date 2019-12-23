@@ -36,12 +36,15 @@ public class Day2 extends Day {
         return result;
     }
 
-
-    public static ProgramResult runProgram(String program, long[] opCodes, Integer noun, Integer verb, Integer[] inputs) {
-        return runProgram(program, opCodes, noun, verb, inputs, 0);
+    public static ProgramResult runProgram(String program, long[] opCodes, Integer noun, Integer verb, Integer[] inputs, int initialPosition) {
+        return runProgram(program, opCodes, noun, verb, inputs, initialPosition, 0, false);
     }
 
-    public static ProgramResult runProgram(String program, long[] opCodes, Integer noun, Integer verb, Integer[] inputs, int initialPosition) {
+    public static ProgramResult runProgram(String program, long[] opCodes, Integer noun, Integer verb, Integer[] inputs) {
+        return runProgram(program, opCodes, noun, verb, inputs, 0, 0, false);
+    }
+
+    public static ProgramResult runProgram(String program, long[] opCodes, Integer noun, Integer verb, Integer[] inputs, int initialPosition, int initialRelativeBase, boolean returnZeros) {
         if (opCodes == null) {
             opCodes = Arrays.stream(program.split(",")).mapToLong(Long::parseLong).toArray();
         }
@@ -54,7 +57,7 @@ public class Day2 extends Day {
 
         int step;
         int inputIndex = 0;
-        int relativeBase = 0;
+        int relativeBase = initialRelativeBase;
         for (int i = initialPosition; getProgramValue(opCodes, i) != 99; i += step) {
             String instruction = leftPad(String.valueOf(getProgramValue(opCodes, i)), 5);
             Operation operation = Operation.getOperation(instruction.charAt(instruction.length() - 1));
@@ -68,12 +71,12 @@ public class Day2 extends Day {
                 long result = parameters[0] * parameters[1];
                 opCodes = setProgramValue(opCodes, (int) parameters[2], result);
             } else if (operation.equals(Operation.OUTPUT)) {
-                if (noun == null && verb == null && parameters[0] > 0) {
-                    return new ProgramResult(opCodes, i, step, parameters[0]);
+                if (noun == null && verb == null && parameters[0] > 0 || returnZeros) {
+                    return new ProgramResult(opCodes, i, step, relativeBase, parameters[0]);
                 }
             } else if (operation.equals(Operation.INPUT)) {
                 if (inputIndex >= inputs.length) {
-                    return new ProgramResult(opCodes, -1, 0, 0);
+                    return new ProgramResult(opCodes, -1, 0, relativeBase, 0);
                 }
                 long inputPosition = parameters[0];
                 int inputValue = inputs[inputIndex];
@@ -105,52 +108,39 @@ public class Day2 extends Day {
                 relativeBase += parameters[0];
             }
         }
-        return new ProgramResult(opCodes, -1, 0, getProgramValue(opCodes, 0));
+        return new ProgramResult(opCodes, -1, 0, relativeBase, getProgramValue(opCodes, 0));
     }
 
     public static class ProgramResult {
         private long[] opCodes;
         private int pointer;
         private int nextStep;
+        private int relativeBase;
         private long result;
 
-        public ProgramResult(long[] opCodes, int pointer, int nextStep, long result) {
+        public ProgramResult(long[] opCodes, int pointer, int nextStep, int relativeBase, long result) {
             this.opCodes = opCodes;
             this.pointer = pointer;
             this.nextStep = nextStep;
+            this.relativeBase = relativeBase;
             this.result = result;
         }
 
-        public long[] getOpCodes() {
-            return opCodes;
-        }
-
-        public void setOpCodes(long[] opCodes) {
-            this.opCodes = opCodes;
-        }
 
         public int getPointer() {
             return pointer;
-        }
-
-        public void setPointer(int pointer) {
-            this.pointer = pointer;
         }
 
         public long getResult() {
             return result;
         }
 
-        public void setResult(int result) {
-            this.result = result;
-        }
-
         public int getNextStep() {
             return nextStep;
         }
 
-        public void setNextStep(int nextStep) {
-            this.nextStep = nextStep;
+        public int getRelativeBase() {
+            return relativeBase;
         }
     }
 
