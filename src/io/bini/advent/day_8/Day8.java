@@ -63,9 +63,9 @@ public class Day8 extends Day {
             int y = (i % (length * width)) % length;
             if (picture[x][y] == 0 && color != '2') {
                 if (color == '0') {
-                    color = '.';
+                    color = ' ';
                 } else if (color == '1') {
-                    color = '0';
+                    color = '#';
                 }
                 picture[x][y] = color;
             }

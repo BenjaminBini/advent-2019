@@ -32,13 +32,13 @@ public class Day11 extends Day {
         String program = bf.readLine();
         runProgram(program, 1);
         String result = "";
-        for (int y = minY; y < maxY; y++) {
+        for (int y = maxY; y >= minY; --y) {
             result += '\n';
             for (int x = minX; x < maxX; x++) {
                 if (getColor(x, y, paintZone) == 1) {
                     result += '#';
                 } else {
-                    result += '.';
+                    result += ' ';
                 }
             }
         }
@@ -62,6 +62,7 @@ public class Day11 extends Day {
         Day2.ProgramResult programResult;
         while (true) {
             programResult = Day2.runProgram(null, opCodes, null, null, new Integer[]{input}, pointer, relativeBase, true);
+            opCodes = programResult.getOpCodes();
             pointer = programResult.getPointer() + programResult.getNextStep();
             relativeBase = programResult.getRelativeBase();
             if (toggle == 0) { // paint

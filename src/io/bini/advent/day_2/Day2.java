@@ -126,6 +126,9 @@ public class Day2 extends Day {
             this.result = result;
         }
 
+        public long[] getOpCodes() {
+            return opCodes;
+        }
 
         public int getPointer() {
             return pointer;
